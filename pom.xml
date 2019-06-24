@@ -5,10 +5,11 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.yoloho</groupId>
+        <groupId>com.yoloho.parent</groupId>
         <artifactId>enhanced-parent</artifactId>
         <version>1.0.0</version>
     </parent>
+    <groupId>com.yoloho.common</groupId>
     <artifactId>enhanced-common</artifactId>
     <name>enhanced-common</name>
     <version>1.0.0</version>
