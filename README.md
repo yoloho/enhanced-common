@@ -17,7 +17,7 @@ enhanced-common
 - [Multi Thread](#multi-thread)
 	- [GracefullyShutdownThread](#gracefullyshutdownthread)
 		- [delayMillis](#delaymillis)
-		- [init && deinit](#init-deinit)
+		- [init && deinit](#init--deinit)
 		- [shouldNotShutdown](#shouldnotshutdown)
 		- [run](#run)
 		- [getJobClass](#getjobclass)
