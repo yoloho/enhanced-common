@@ -12,7 +12,7 @@
     <groupId>com.yoloho.enhanced</groupId>
     <artifactId>enhanced-common</artifactId>
     <name>enhanced-common</name>
-    <version>1.0.1-SNAPSHOTS</version>
+    <version>1.0.1</version>
     <url>https://github.com/yoloho/enhanced-common</url>
 
     <licenses>
