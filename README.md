@@ -1,6 +1,34 @@
-# Change Log
-## 1.0.0
-Initialize for open source
+enhanced-common
+===
+
+- [Annotations](#annotations)
+	- [@Nullable/@NonNull/@NonNullApi/@NonNullFields](#nullablenonnullnonnullapinonnullfields)
+- [IO Operations](#io-operations)
+	- [HttpClientUtil](#httpclientutil)
+	- [FileUtil](#fileutil)
+- [Others](#others)
+	- [AESUtil](#aesutil)
+	- [DigestUtil](#digestutil)
+	- [RandomUtil](#randomutil)
+	- [Logging](#logging)
+- [Type dealing](#type-dealing)
+	- [NumberUtil](#numberutil)
+	- [StringUtil](#stringutil)
+- [Multi Thread](#multi-thread)
+	- [GracefullyShutdownThread](#gracefullyshutdownthread)
+		- [delayMillis](#delaymillis)
+		- [init && deinit](#init-deinit)
+		- [shouldNotShutdown](#shouldnotshutdown)
+		- [run](#run)
+		- [getJobClass](#getjobclass)
+		- [call](#call)
+	- [QueueDrivenThread](#queuedriventhread)
+		- [add](#add)
+		- [getQueueSize](#getQueueSize)
+		- [getQueueCapacity](#getQueueCapacity)
+- [Change Log](#change-log)
+	- [1.0.1](101)
+	- [1.0.0](100)
 
 # Annotations
 
@@ -88,5 +116,12 @@ Special the maximum count of the queue. (Called when initializing)
 ```
 add() will throw Exception when the thread is in shutdown process.
 ```
+
+# Change Log
+## 1.0.1
+* Fix a bug in `BeansUtil`
+
+## 1.0.0
+Initialize for open source
 
 
