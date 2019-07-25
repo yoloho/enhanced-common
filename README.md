@@ -27,8 +27,8 @@ enhanced-common
 		- [getQueueSize](#getQueueSize)
 		- [getQueueCapacity](#getQueueCapacity)
 - [Change Log](#change-log)
-	- [1.0.1](101)
-	- [1.0.0](100)
+	- [1.0.1](#101)
+	- [1.0.0](#100)
 
 # Annotations
 
