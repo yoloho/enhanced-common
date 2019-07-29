@@ -118,6 +118,9 @@ add() will throw Exception when the thread is in shutdown process.
 ```
 
 # Change Log
+## 1.0.2
+* Add setConnectionValidationPeriod to HttpClientUtil
+
 ## 1.0.1
 * Fix a bug in `BeansUtil`
 

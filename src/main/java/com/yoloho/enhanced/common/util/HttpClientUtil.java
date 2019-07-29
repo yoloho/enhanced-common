@@ -55,6 +55,7 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.yoloho.enhanced.common.annotation.NonNull;
 
@@ -118,6 +119,20 @@ public class HttpClientUtil {
     
     public static void setCustomUserAgent(String customUserAgent) {
         HttpClientUtil.customUserAgent = customUserAgent;
+    }
+    
+    /**
+     * Set the validation time in milliseconds to detect CLOSE_WAIT connections in pool.
+     * <p>
+     * Default to 1000 ms.
+     * <p>
+     * NOTE: Only available in synchronized requests.
+     * 
+     * @param periodInMillis
+     */
+    public static void setConnectionValidationPeriod(int periodInMillis) {
+        Preconditions.checkArgument(periodInMillis >= 100, "Period may not be less than 100 ms");
+        ConnectionManager.getConnectionManager().setValidateAfterInactivity(periodInMillis);
     }
 
     /**

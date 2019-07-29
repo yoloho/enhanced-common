@@ -2,6 +2,7 @@ package com.yoloho.enhanced.common.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 import java.util.Map;
@@ -67,20 +68,19 @@ public class HttpClientUtilTest {
         assertEquals(2, map.size());
         assertEquals("v1", map.get("k1"));
     }
+    
+    @Test(expected = RuntimeException.class)
+    public void setConnectionValidationPeriodException() {
+        HttpClientUtil.setConnectionValidationPeriod(90);
+    }
 
     @Test
     public void getRequestTest() {
-        String url = "http://uicapi.test.yoloho.com/user/login";
-        Msg msg = JSON.parseObject(HttpClientUtil.getRequest(url), Msg.class);
-        Assert.assertEquals(21100, msg.getErrno());
-        msg = JSON.parseObject(HttpClientUtil.getRequest(url, 1000), Msg.class);
-        Assert.assertEquals(21100, msg.getErrno());
-        msg = JSON.parseObject(HttpClientUtil.getRequest(url, null, 1000), Msg.class);
-        Assert.assertEquals(21100, msg.getErrno());
-        msg = JSON.parseObject(HttpClientUtil.postRequest(url, null), Msg.class);
-        Assert.assertEquals(21100, msg.getErrno());
-        msg = JSON.parseObject(HttpClientUtil.postRequest(url, null, 1000), Msg.class);
-        Assert.assertEquals(21100, msg.getErrno());
+        HttpClientUtil.setConnectionValidationPeriod(100);
+        String url = "http://www.baidu.com";
+        String body = HttpClientUtil.getRequest(url);
+        assertNotNull(body);
+        assertTrue(body.length() > 0);
     }
     
     @Test
