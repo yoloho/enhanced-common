@@ -19,6 +19,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.NoHttpResponseException;
+import org.apache.http.ParseException;
 import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
@@ -548,14 +549,39 @@ public class HttpClientUtil {
     }
     
     /**
-     * 通用的同步形式http执行调用
-     * 
      * @param request
      * @param timeout
      * @param defaultCharset
      * @return
      */
     public static String executeRequest(HttpUriRequest request, int timeout, String defaultCharset) {
+        try (CloseableHttpResponse response = executeRequestDirect(request, timeout, defaultCharset)) {
+            if (!(response.getStatusLine().getStatusCode() < 400)) {
+                if (response.getStatusLine().getStatusCode() == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
+                    return EntityUtils.toString(response.getEntity());
+                }
+                if (response.getEntity() == null) {
+                    throw new RuntimeException("服务器异常稍后再试:" + request.getURI().toString() + "; httpStatus: "
+                            + response.getStatusLine().getStatusCode() + " ;response.getEntity()  is null ");
+                }
+                throw new RuntimeException("服务器异常稍后再试:" + request.getURI().toString() + "; httpStatus:"
+                        + response.getStatusLine().getStatusCode() + " ; " + EntityUtils.toString(response.getEntity()));
+            }
+            return EntityUtils.toString(response.getEntity(), defaultCharset);
+        } catch (ParseException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    /**
+     * @param request
+     * @param timeout
+     * @param defaultCharset
+     * @return response of the request. <br>
+     * <b>ENSURE</b> to close the response.
+     */
+    public static CloseableHttpResponse executeRequestDirect(HttpUriRequest request, int timeout,
+            String defaultCharset) {
         CloseableHttpClient httpClient = null;
         CloseableHttpResponse response = null;
         if ( timeout > 500000 ) {
@@ -572,16 +598,7 @@ public class HttpClientUtil {
                     .setDefaultRequestConfig(config)
                     .build();
             response = httpClient.execute(request);
-            if ( !(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) ) {
-                if ( response.getStatusLine().getStatusCode() == HttpStatus.SC_INTERNAL_SERVER_ERROR ) {
-                    return EntityUtils.toString(response.getEntity());
-                }
-                if (response.getEntity() == null) {
-                    throw new RuntimeException("服务器异常稍后再试:" + request.getURI().toString() + "; httpStatus: "+response.getStatusLine().getStatusCode() + " ;response.getEntity()  is null ");
-                }
-                throw new RuntimeException("服务器异常稍后再试:" + request.getURI().toString() + "; httpStatus:"+response.getStatusLine().getStatusCode()+" ; " + EntityUtils.toString(response.getEntity()));
-            }
-            return EntityUtils.toString(response.getEntity(), defaultCharset);
+            return response;
         } catch (Exception e) {
             if (e instanceof IOException) {
 //                log.error("Error while execute request: {} \t {}", e.getMessage(), request.getURI().toString());
@@ -589,18 +606,10 @@ public class HttpClientUtil {
             request.abort();
             throw new RuntimeException(e);
         } finally {
-            if ( response != null ) {
-                try {
-                    response.close();
-                    //HttpClientUtils.closeQuietly(response);
-                } catch (Exception ex) {
-                    log.error("Error while close client {}", ex.getMessage());
-                }
-            }
-            if ( httpClient != null ) {
+            if (httpClient != null) {
                 try {
                     httpClient.close();
-                    //HttpClientUtils.closeQuietly(httpClient);
+                    // HttpClientUtils.closeQuietly(httpClient);
                 } catch (Exception ex) {
                     log.error("Error while close client, {}", ex.getMessage());
                 }
@@ -976,7 +985,7 @@ public class HttpClientUtil {
                 @Override
                 public void completed(HttpResponse response) {
                     try {
-                        if ( !(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) ) {
+                        if (!(response.getStatusLine().getStatusCode() < 400)) {
                             if ( response.getStatusLine().getStatusCode() == HttpStatus.SC_INTERNAL_SERVER_ERROR ) {
                                 callback.completed(request, EntityUtils.toString(response.getEntity()));
                             }
